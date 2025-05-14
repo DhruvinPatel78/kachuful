@@ -37,10 +37,10 @@ const Layout: React.FC<LayoutProps> = ({
                 className="mr-3 p-2 rounded-full hover:bg-slate-700 transition-colors"
                 aria-label="Go back"
               >
-                <ArrowLeft size={20} />
+                <ArrowLeft className={'text-base lg:text-2xl'} />
               </button>
             )}
-            <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+            <h1 className="text-base lg:text-2xl font-bold tracking-tight">{title}</h1>
           </div>
           <button
             onClick={() => {
@@ -48,7 +48,7 @@ const Layout: React.FC<LayoutProps> = ({
               resetContext();
               navigate("/");
             }}
-            className="mr-3 p-2 rounded-full hover:bg-slate-700 transition-colors"
+            className="mr-3 p-2 rounded-full hover:bg-slate-700 transition-colors text-base"
             aria-label="Reset"
           >
             Reset

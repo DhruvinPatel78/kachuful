@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import Layout from '../components/Layout';
-import Button from '../components/Button';
-import NumberSelector from '../components/NumberSelector';
-import { useGameContext } from '../context/GameContext';
-import { Check, X, ArrowRight, Trophy } from 'lucide-react';
+import React, { useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import Layout from "../components/Layout";
+import Button from "../components/Button";
+import NumberSelector from "../components/NumberSelector";
+import { useGameContext } from "../context/GameContext";
+import { Check, X, ArrowRight, Trophy } from "lucide-react";
 
 const ActiveGame: React.FC = () => {
   const { gameId } = useParams<{ gameId: string }>();
@@ -21,7 +21,9 @@ const ActiveGame: React.FC = () => {
     // calculatePlayerTotalScore
   } = useGameContext();
 
-  const [roundState, setRoundState] = useState<'selection' | 'results'>('selection');
+  const [roundState, setRoundState] = useState<"selection" | "results">(
+    "selection",
+  );
 
   React.useEffect(() => {
     if (gameId && (!currentGame || currentGame.id !== gameId)) {
@@ -30,11 +32,11 @@ const ActiveGame: React.FC = () => {
   }, [gameId, currentGame, selectGame]);
 
   if (!currentGame) {
-    navigate('/games');
+    navigate("/games");
     return null;
   }
 
-  if (currentGame.status === 'completed') {
+  if (currentGame.status === "completed") {
     navigate(`/results/${currentGame.id}`);
     return null;
   }
@@ -43,7 +45,7 @@ const ActiveGame: React.FC = () => {
   const currentRoundData = currentGame.rounds[currentRoundIndex];
 
   if (!currentRoundData) {
-    navigate('/games');
+    navigate("/games");
     return null;
   }
 
@@ -63,8 +65,8 @@ const ActiveGame: React.FC = () => {
     // );
 
     // if (allPlayersSelected) {
-      startRound();
-      setRoundState('results');
+    startRound();
+    setRoundState("results");
     // }
   };
 
@@ -73,13 +75,15 @@ const ActiveGame: React.FC = () => {
   };
 
   const handleEndRound = () => {
-    const allPlayersHaveResults = currentGame.players.every(player =>
-      currentRoundData.playerResults.some(result => result.playerId === player.id)
+    const allPlayersHaveResults = currentGame.players.every((player) =>
+      currentRoundData.playerResults.some(
+        (result) => result.playerId === player.id,
+      ),
     );
 
     if (allPlayersHaveResults) {
       endRound();
-      setRoundState('selection');
+      setRoundState("selection");
     }
   };
 
@@ -89,14 +93,16 @@ const ActiveGame: React.FC = () => {
   };
 
   const getPlayerSelection = (playerId: string) => {
-    return currentRoundData.playerSelections.find(
-      selection => selection.playerId === playerId
-    )?.selectedNumber || 0;
+    return (
+      currentRoundData.playerSelections.find(
+        (selection) => selection.playerId === playerId,
+      )?.selectedNumber || 0
+    );
   };
 
   const getPlayerResult = (playerId: string) => {
     return currentRoundData.playerResults.find(
-      result => result.playerId === playerId
+      (result) => result.playerId === playerId,
     );
   };
 
@@ -104,15 +110,17 @@ const ActiveGame: React.FC = () => {
   //   currentRoundData.playerSelections.some(selection => selection.playerId === player.id)
   // );
 
-  const allPlayersHaveResults = currentGame.players.every(player =>
-    currentRoundData.playerResults.some(result => result.playerId === player.id)
+  const allPlayersHaveResults = currentGame.players.every((player) =>
+    currentRoundData.playerResults.some(
+      (result) => result.playerId === player.id,
+    ),
   );
 
   const getPlayerTotalScore = (playerId: string) => {
     let total = 0;
 
     for (const round of currentGame.rounds) {
-      const result = round.playerResults.find(r => r.playerId === playerId);
+      const result = round.playerResults.find((r) => r.playerId === playerId);
       if (result) {
         total += result.score;
       }
@@ -128,15 +136,35 @@ const ActiveGame: React.FC = () => {
   // };
 
   const getTotalSelectedNumbers = () => {
-    return currentRoundData.playerSelections.reduce((sum, selection) =>
-      sum + selection.selectedNumber, 0
+    return currentRoundData.playerSelections.reduce(
+      (sum, selection) => sum + selection.selectedNumber,
+      0,
     );
   };
 
   const totalSelectedNumbers = getTotalSelectedNumbers();
-  const isRoundNumberEqual = totalSelectedNumbers === currentRoundData.maxNumber;
+  const isRoundNumberEqual =
+    totalSelectedNumbers === currentRoundData.maxNumber;
 
-  const allPass = currentGame.players.map(item => getPlayerResult(item.id)?.success).every(pass => pass === true);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const allPass = useMemo(() => {
+    const winnerSelectedNUmber = currentGame.players
+      .map((item) => getPlayerResult(item.id))
+      .filter((item) => item?.success)
+      .map((item) => item?.playerId)
+      .map(
+        (iten) =>
+          currentRoundData.playerSelections.find(
+            (item) => item.playerId === iten,
+          )?.selectedNumber,
+      );
+    if (winnerSelectedNUmber.length > 0) {
+      // @ts-ignore
+      return winnerSelectedNUmber.reduce((a, b) => a + b, 0) <= currentRoundData.number;
+    } else {
+      return true;
+    }
+  }, [currentGame, currentRoundData]);
 
   return (
     <Layout
@@ -144,50 +172,68 @@ const ActiveGame: React.FC = () => {
       showBackButton
     >
       <div className="max-w-lg mx-auto">
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-5 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold">
-              Round {currentRoundData.number}
-            </h2>
-            <div className="text-sm bg-slate-700 px-3 py-1 rounded-full">
-              {roundState === 'selection' ? 'Selection Phase' : 'Results Phase'}
+        <div className={"flex flex-col gap-6"}>
+          <div className="bg-slate-800 border border-slate-700 rounded-lg p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold">
+                Round {currentRoundData.number}
+              </h2>
+              <div className="text-sm bg-slate-700 px-3 py-1 rounded-full">
+                {roundState === "selection"
+                  ? "Selection Phase"
+                  : "Results Phase"}
+              </div>
             </div>
-          </div>
 
-          <div className="flex flex-wrap justify-between items-center text-sm text-slate-300 mb-2">
-            <div>Max Number: <span className="font-bold">{currentRoundData.maxNumber}</span></div>
-            <div>Players: <span className="font-bold">{currentGame.players.length}</span></div>
-          </div>
-
-          <div className="h-2 bg-slate-700 rounded-full overflow-hidden mb-1">
-            <div
-              className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-500"
-              style={{
-                width: `${roundState === 'selection' 
-                  ? (currentRoundData.playerSelections.length / currentGame.players.length * 100) 
-                  : (currentRoundData.playerResults.length / currentGame.players.length * 100)}%`
-              }}
-            ></div>
-          </div>
-
-          <div className="text-xs text-slate-400 text-right">
-            {roundState === 'selection'
-              ? `${currentRoundData.playerSelections.length}/${currentGame.players.length} selected`
-              : `${currentRoundData.playerResults.length}/${currentGame.players.length} recorded`}
-          </div>
-
-          {roundState === 'selection' && isRoundNumberEqual && (
-            <div className="mt-3 p-3 bg-red-900/30 border border-red-700/50 rounded-lg">
-              <p className="text-sm text-red-400">
-                Warning: Sum of all selected numbers ({totalSelectedNumbers}) must equal round number ({currentRoundData.maxNumber})
-              </p>
+            <div className="flex flex-wrap justify-between items-center text-sm text-slate-300 mb-2">
+              <div>
+                Max Number:{" "}
+                <span className="font-bold">{currentRoundData.maxNumber}</span>
+              </div>
+              <div>
+                Players:{" "}
+                <span className="font-bold">{currentGame.players.length}</span>
+              </div>
             </div>
-          )}
+
+            <div className="h-2 bg-slate-700 rounded-full overflow-hidden mb-1">
+              <div
+                className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-500"
+                style={{
+                  width: `${
+                    roundState === "selection"
+                      ? (currentRoundData.playerSelections.length /
+                          currentGame.players.length) *
+                        100
+                      : (currentRoundData.playerResults.length /
+                          currentGame.players.length) *
+                        100
+                  }%`,
+                }}
+              ></div>
+            </div>
+
+            <div className="text-xs text-slate-400 text-right">
+              {roundState === "selection"
+                ? `${currentRoundData.playerSelections.length}/${currentGame.players.length} selected`
+                : `${currentRoundData.playerResults.length}/${currentGame.players.length} recorded`}
+            </div>
+
+            {roundState === "selection" && isRoundNumberEqual && (
+              <div className="mt-3 p-3 bg-red-900/30 border border-red-700/50 rounded-lg">
+                <p className="text-sm text-red-400">
+                  Warning: Sum of all selected numbers ({totalSelectedNumbers})
+                  must equal round number ({currentRoundData.maxNumber})
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className={"h-[1px] bg-slate-700 mb-6 "} />
         </div>
-
         {/* Player selections or results */}
         <div className="space-y-4 mb-8">
-          {currentGame.players.map(player => {
+          {currentGame.players.map((player) => {
             const playerSelection = getPlayerSelection(player.id);
             const playerResult = getPlayerResult(player.id);
             const totalScore = getPlayerTotalScore(player.id);
@@ -196,11 +242,11 @@ const ActiveGame: React.FC = () => {
               <div
                 key={player.id}
                 className={`bg-slate-800 border border-slate-700 rounded-lg p-4 transition-all duration-300 ${
-                  roundState === 'results' && playerResult
+                  roundState === "results" && playerResult
                     ? playerResult.success
-                      ? 'border-green-500/50 shadow-lg shadow-green-900/20'
-                      : 'border-red-500/50 shadow-lg shadow-red-900/20'
-                    : ''
+                      ? "border-green-500/50 shadow-lg shadow-green-900/20"
+                      : "border-red-500/50 shadow-lg shadow-red-900/20"
+                    : ""
                 }`}
               >
                 <div className="flex justify-between items-center mb-3">
@@ -210,13 +256,15 @@ const ActiveGame: React.FC = () => {
                   </div>
                 </div>
 
-                {roundState === 'selection' ? (
+                {roundState === "selection" ? (
                   // Number selection phase
                   <div className="flex justify-center py-2">
                     <NumberSelector
                       maxNumber={currentRoundData.maxNumber}
                       selectedValue={playerSelection}
-                      onSelect={(value) => handlePlayerNumberSelect(player.id, value)}
+                      onSelect={(value) =>
+                        handlePlayerNumberSelect(player.id, value)
+                      }
                     />
                   </div>
                 ) : (
@@ -225,37 +273,43 @@ const ActiveGame: React.FC = () => {
                     <div className="flex justify-between items-center mb-3">
                       <div className="text-center">
                         <div className="text-sm text-slate-400">Selected</div>
-                        <div className="text-2xl font-bold">{playerSelection}</div>
+                        <div className="text-2xl font-bold">
+                          {playerSelection}
+                        </div>
                       </div>
 
                       {playerResult && (
                         <div className="text-center">
                           <div className="text-sm text-slate-400">Result</div>
-                          <div className={`text-xl font-bold ${
-                            playerResult.success ? 'text-green-400' : 'text-red-400'
-                          }`}>
+                          <div
+                            className={`text-xl font-bold ${
+                              playerResult.success
+                                ? "text-green-400"
+                                : "text-red-400"
+                            }`}
+                          >
                             {playerResult.success
                               ? `+${playerResult.score}`
-                              : '0'}
+                              : "0"}
                           </div>
                         </div>
                       )}
-                        <div className="flex gap-2">
-                          <Button
-                            variant="success"
-                            onClick={() => handlePassFail(player.id, true)}
-                            className="w-12 h-12 flex items-center justify-center"
-                          >
-                            <Check size={24} />
-                          </Button>
-                          <Button
-                            variant="danger"
-                            onClick={() => handlePassFail(player.id, false)}
-                            className="w-12 h-12 flex items-center justify-center"
-                          >
-                            <X size={24} />
-                          </Button>
-                        </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="success"
+                          onClick={() => handlePassFail(player.id, true)}
+                          className="w-12 h-12 flex items-center justify-center"
+                        >
+                          <Check size={24} />
+                        </Button>
+                        <Button
+                          variant="danger"
+                          onClick={() => handlePassFail(player.id, false)}
+                          className="w-12 h-12 flex items-center justify-center"
+                        >
+                          <X size={24} />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -266,12 +320,12 @@ const ActiveGame: React.FC = () => {
 
         {/* Action buttons */}
         <div className="flex flex-col gap-4">
-          {roundState === 'selection' ? (
+          {roundState === "selection" ? (
             <Button
               onClick={handleStartRound}
               disabled={isRoundNumberEqual}
               size="lg"
-              className={'flex justify-center items-center'}
+              className={"flex justify-center items-center h-10"}
             >
               Start Round
               <ArrowRight size={16} className="ml-1" />
@@ -279,9 +333,9 @@ const ActiveGame: React.FC = () => {
           ) : (
             <Button
               onClick={handleEndRound}
-              disabled={!allPlayersHaveResults || allPass}
+              disabled={!allPlayersHaveResults || !allPass}
               size="lg"
-              className={'flex justify-center items-center'}
+              className={"flex justify-center items-center h-10"}
             >
               End Round
               <ArrowRight size={16} className="ml-1" />
@@ -291,7 +345,7 @@ const ActiveGame: React.FC = () => {
           <Button
             variant="outline"
             onClick={handleEndGame}
-            className={'flex justify-center items-center'}
+            className={"flex justify-center items-center h-10"}
           >
             <Trophy size={16} className="mr-1" />
             End Game & View Results
