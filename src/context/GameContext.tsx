@@ -1,15 +1,26 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { Game, Player, GameContextType } from '../types';
-import { loadGames, saveGames, loadPlayers, savePlayers } from '../utils/storage';
-import { calculateRoundScore, calculateRoundNumbers } from '../utils/scoring';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { v4 as uuidv4 } from "uuid";
+import { Game, Player, GameContextType } from "../types";
+import {
+  loadGames,
+  saveGames,
+  loadPlayers,
+  savePlayers,
+} from "../utils/storage";
+import { calculateRoundScore, calculateRoundNumbers } from "../utils/scoring";
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const useGameContext = () => {
   const context = useContext(GameContext);
   if (!context) {
-    throw new Error('useGameContext must be used within a GameProvider');
+    throw new Error("useGameContext must be used within a GameProvider");
   }
   return context;
 };
@@ -48,10 +59,10 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       id: uuidv4(),
       name,
       date: new Date().toISOString(),
-      status: 'active',
+      status: "active",
       players: [],
       rounds: [],
-      currentRound: 0
+      currentRound: 0,
     };
 
     setGames([...games, newGame]);
@@ -59,7 +70,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   };
 
   const selectGame = (gameId: string) => {
-    const game = games.find(g => g.id === gameId) || null;
+    const game = games.find((g) => g.id === gameId) || null;
     setCurrentGame(game);
   };
 
@@ -69,17 +80,17 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     const newPlayer: Player = {
       id: uuidv4(),
       name,
-      saved
+      saved,
     };
 
     const updatedGame = {
       ...currentGame,
-      players: [...currentGame.players, newPlayer]
+      players: [...currentGame.players, newPlayer],
     };
 
     updateGame(updatedGame);
 
-    if (saved && !savedPlayers.some(p => p.name === name)) {
+    if (saved && !savedPlayers.some((p) => p.name === name)) {
       setSavedPlayers([...savedPlayers, newPlayer]);
     }
   };
@@ -89,7 +100,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
     const updatedGame = {
       ...currentGame,
-      players: currentGame.players.filter(p => p.id !== playerId)
+      players: currentGame.players.filter((p) => p.id !== playerId),
     };
 
     updateGame(updatedGame);
@@ -97,7 +108,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
   const updateGame = (updatedGame: Game) => {
     setCurrentGame(updatedGame);
-    setGames(games.map(g => g.id === updatedGame.id ? updatedGame : g));
+    setGames(games.map((g) => (g.id === updatedGame.id ? updatedGame : g)));
   };
 
   const getRoundNumbers = (playerCount: number): number[] => {
@@ -111,15 +122,18 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     const firstRound = {
       number: 1,
       maxNumber: roundNumbers[0],
-      playerSelections: [],
+      playerSelections: currentGame.players.map((p) => ({
+        playerId: p.id,
+        selectedNumber: 0,
+      })),
       playerResults: [],
-      completed: false
+      completed: false,
     };
 
     const updatedGame = {
       ...currentGame,
       rounds: [firstRound],
-      currentRound: 1
+      currentRound: 1,
     };
 
     updateGame(updatedGame);
@@ -133,14 +147,16 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     const round = rounds[currentRoundIndex];
 
     // Remove existing selection if any
-    const selections = round.playerSelections.filter(s => s.playerId !== playerId);
+    const selections = round.playerSelections.filter(
+      (s) => s.playerId !== playerId,
+    );
 
     // Add new selection
     selections.push({ playerId, selectedNumber: number });
 
     rounds[currentRoundIndex] = {
       ...round,
-      playerSelections: selections
+      playerSelections: selections,
     };
 
     updateGame({ ...currentGame, rounds });
@@ -161,21 +177,23 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     const round = rounds[currentRoundIndex];
 
     // Find player's selection
-    const selection = round.playerSelections.find(s => s.playerId === playerId);
+    const selection = round.playerSelections.find(
+      (s) => s.playerId === playerId,
+    );
     if (!selection) return;
 
     // Calculate score
     const score = calculateRoundScore(selection.selectedNumber, success);
 
     // Remove existing result if any
-    const results = round.playerResults.filter(r => r.playerId !== playerId);
+    const results = round.playerResults.filter((r) => r.playerId !== playerId);
 
     // Add new result
     results.push({ playerId, success, score });
 
     rounds[currentRoundIndex] = {
       ...round,
-      playerResults: results
+      playerResults: results,
     };
 
     updateGame({ ...currentGame, rounds });
@@ -191,7 +209,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     // Mark current round as completed
     rounds[currentRoundIndex] = {
       ...rounds[currentRoundIndex],
-      completed: true
+      completed: true,
     };
 
     // Check if we have more rounds
@@ -200,9 +218,12 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       const nextRound = {
         number: nextRoundNumber,
         maxNumber: roundNumbers[nextRoundNumber - 1],
-        playerSelections: [],
+        playerSelections: currentGame.players.map((p) => ({
+          playerId: p.id,
+          selectedNumber: 0,
+        })),
         playerResults: [],
-        completed: false
+        completed: false,
       };
 
       rounds.push(nextRound);
@@ -210,14 +231,14 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       updateGame({
         ...currentGame,
         rounds,
-        currentRound: nextRoundNumber
+        currentRound: nextRoundNumber,
       });
     } else {
       // No more rounds, game is complete
       updateGame({
         ...currentGame,
         rounds,
-        status: 'completed'
+        status: "completed",
       });
     }
   };
@@ -227,7 +248,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
     updateGame({
       ...currentGame,
-      status: 'completed'
+      status: "completed",
     });
   };
 
@@ -235,7 +256,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     setGames([]);
     setCurrentGame(null);
     setSavedPlayers([]);
-  }
+  };
 
   const value: GameContextType = {
     games,
@@ -252,7 +273,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     endRound,
     endGame,
     getRoundNumbers,
-    resetContext
+    resetContext,
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

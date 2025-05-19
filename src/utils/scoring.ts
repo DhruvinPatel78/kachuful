@@ -20,18 +20,18 @@ export const getPlayerRankings = (game: Game): PlayerResult[] => {
     success: true, // Not relevant for final ranking
     score: calculatePlayerTotalScore(game, player.id)
   }));
-  
+
   return playerScores.sort((a, b) => b.score - a.score);
 };
 
 export const calculateRoundNumbers = (playerCount: number): number[] => {
-  const maxRound = Math.floor(54 / playerCount);
-  
+  const maxRound = Math.floor(52 / playerCount);
+
   // Ascending rounds (1 to maxRound)
   const ascending = Array.from({ length: maxRound }, (_, i) => i + 1);
-  
+
   // Descending rounds (maxRound-1 down to 1)
   const descending = Array.from({ length: maxRound - 1 }, (_, i) => maxRound - i - 1);
-  
+
   return [...ascending, ...descending];
 };
