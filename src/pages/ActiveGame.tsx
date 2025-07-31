@@ -170,7 +170,7 @@ const ActiveGame: React.FC = () => {
 
   const getSymbol = useMemo((number) => {
   if (currentRoundData.number) {
-     return { char: symbols[(currentRoundData.number - 1) % symbols.length], index: symbols.findIndex(symbols[(currentRoundData.number - 1) % symbols.length]) + 1} 
+     return { char: symbols[(currentRoundData.number - 1) % symbols.length], index: symbols.findIndex(item => item === symbols[(currentRoundData.number - 1) % symbols.length]) + 1} 
   } else return '';
   },[currentRoundData])
 
