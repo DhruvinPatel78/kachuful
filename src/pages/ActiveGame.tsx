@@ -184,7 +184,7 @@ const ActiveGame: React.FC = () => {
           <div className="bg-slate-800 border border-slate-700 rounded-lg p-5">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-slate-300">
-                Round {currentRoundData.number} <span className={getSymbol.index % 2 === 0 ? 'text-red' : "text-black"}>{getSymbol.char}</span> {}
+                Round {currentRoundData.number} <span className={getSymbol.index % 2 === 0 ? 'text-red-50' : "text-black"}>{getSymbol.char}</span> {}
               </h2>
               <div className="text-sm bg-slate-700 px-3 py-1 rounded-full">
                 {roundState === "selection"
