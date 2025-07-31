@@ -6,6 +6,8 @@ import NumberSelector from "../components/NumberSelector";
 import { useGameContext } from "../context/GameContext";
 import { Check, X, ArrowRight, Trophy } from "lucide-react";
 
+const symbols = ["♠️", "♦️", "♣️", "♥️"];
+
 const ActiveGame: React.FC = () => {
   const { gameId } = useParams<{ gameId: string }>();
   const navigate = useNavigate();
@@ -166,6 +168,12 @@ const ActiveGame: React.FC = () => {
     }
   }, [currentGame, currentRoundData]);
 
+  const getSymbol = useMemo((number) => {
+  if (currentRoundData.number) {
+     return symbols[(currentRoundData.number - 1) % symbols.length]; 
+  } else return '';
+  },[currentRoundData])
+
   return (
     <Layout
       title={`Round ${currentRoundData.number} • ${currentGame.name}`}
@@ -176,7 +184,7 @@ const ActiveGame: React.FC = () => {
           <div className="bg-slate-800 border border-slate-700 rounded-lg p-5">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold">
-                Round {currentRoundData.number} Hi
+                Round {currentRoundData.number} 
               </h2>
               <div className="text-sm bg-slate-700 px-3 py-1 rounded-full">
                 {roundState === "selection"
