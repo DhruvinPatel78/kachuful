@@ -299,7 +299,7 @@ const ActiveGame: React.FC = () => {
                           >
                             {playerResult.success
                               ? `+${playerResult.score}`
-                              : "FAIL"}
+                              : "0"}
                           </div>
                         </div>
                       )}
