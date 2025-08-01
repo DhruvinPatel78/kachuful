@@ -186,7 +186,7 @@ const ActiveGame: React.FC = () => {
               <h2 className="text-xl font-bold text-slate-300">
                 Round {currentRoundData.number}  {}
               </h2>
-              <span className={`text-5xl ${getSymbol.index % 2 === 0 ? 'text-red' : "text-black"}`}>{getSymbol.char}</span>
+              <span className={`text-5xl ${getSymbol.index % 2 === 0 ? 'text-danger' : "text-black"}`}>{getSymbol.char}</span>
               <div className="text-sm bg-slate-700 px-3 py-1 rounded-full">
                 {roundState === "selection"
                   ? "Selection"
@@ -230,9 +230,9 @@ const ActiveGame: React.FC = () => {
 
             {roundState === "selection" && isRoundNumberEqual && (
               <div className="mt-3 p-3 bg-red-900/30 border border-red-700/50 rounded-lg">
-                <p className="text-sm text-red-400">
+                <p className="text-sm text-red-300 font-medium">
                   Warning: Sum of all selected numbers ({totalSelectedNumbers})
-                  must equal round number ({currentRoundData.maxNumber})
+                  equals round number ({currentRoundData.maxNumber}). This is not allowed!
                 </p>
               </div>
             )}
@@ -254,7 +254,7 @@ const ActiveGame: React.FC = () => {
                   roundState === "results" && playerResult
                     ? playerResult.success
                       ? "border-green-500/50 shadow-lg shadow-green-900/20"
-                      : "border-red-500/50 shadow-lg shadow-red-900/20"
+                      : "border-red-500/50 shadow-lg shadow-red-500/20 bg-red-950/20"
                     : ""
                 }`}
               >
@@ -294,7 +294,7 @@ const ActiveGame: React.FC = () => {
                             className={`text-xl font-bold ${
                               playerResult.success
                                 ? "text-green-400"
-                                : "text-red-400"
+                                : "text-red-500 font-extrabold"
                             }`}
                           >
                             {playerResult.success

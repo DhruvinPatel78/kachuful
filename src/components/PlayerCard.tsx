@@ -52,7 +52,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({
           <Button 
             variant="outline" 
             size="sm"
-            className="hover:bg-red-900/30 hover:border-red-700 hover:text-red-400"
+            className="hover:bg-red-900/30 hover:border-red-500 hover:text-red-400 transition-colors"
             onClick={() => onRemove(player.id)}
             aria-label={`Remove ${player.name}`}
           >
