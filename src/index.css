@@ -31,3 +31,32 @@ body {
 input[type="checkbox"] {
   @apply rounded;
 }
+
+/* Ensure red colors are properly displayed */
+.text-red-500 {
+  color: #ef4444 !important;
+}
+
+.text-red-400 {
+  color: #f87171 !important;
+}
+
+.text-red-300 {
+  color: #fca5a5 !important;
+}
+
+.bg-red-600 {
+  background-color: #dc2626 !important;
+}
+
+.bg-red-700 {
+  background-color: #b91c1c !important;
+}
+
+.border-red-500 {
+  border-color: #ef4444 !important;
+}
+
+.border-red-700 {
+  border-color: #b91c1c !important;
+}
