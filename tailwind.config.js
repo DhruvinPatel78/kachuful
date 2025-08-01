@@ -4,8 +4,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        "red-400": "#ef5350"
-        // 'red': '#e74c3c',
+        "red-400": "#ef5350",
+        'red': '#e74c3c',
       },
     },
   },
