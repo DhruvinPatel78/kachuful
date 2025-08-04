@@ -293,6 +293,7 @@ const ActiveGame: React.FC = () => {
                       onSelect={(value) =>
                         handlePlayerNumberSelect(player.id, value)
                       }
+                      isInvalid={roundState === "selection" && isRoundNumberEqual}
                     />
                   </div>
                 ) : (
