@@ -279,7 +279,9 @@ const ActiveGame: React.FC = () => {
                       <span className="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded-full font-medium">Your Turn</span>
                     )}
                   </div>
-                  <div className="text-sm text-slate-400">
+                  <div className={`text-sm ${
+                      isHighlighted ? "text-emerald-400" : "text-slate-400"
+                    }`}>
                     Total Score: <span className="font-bold">{totalScore}</span>
                   </div>
                 </div>
