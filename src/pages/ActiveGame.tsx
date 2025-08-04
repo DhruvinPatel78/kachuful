@@ -223,6 +223,11 @@ const ActiveGame: React.FC = () => {
                 ? `${currentRoundData.playerSelections.length}/${currentGame.players.length} selected`
                 : `${currentRoundData.playerResults.length}/${currentGame.players.length} recorded`}
             </div>
+            <div className="text-xs text-slate-400 text-right">
+              {roundState === "selection"
+                ? `${currentRoundData.playerSelections.length}/${currentGame.players.length} selected`
+                : `${currentRoundData.playerResults.length}/${currentGame.players.length} recorded`}
+            </div>
 
             {roundState === "selection" && isRoundNumberEqual && (
               <div className="mt-3 p-3 bg-red-900/30 border border-red-700/50 rounded-lg">
