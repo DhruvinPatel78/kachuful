@@ -295,6 +295,7 @@ const ActiveGame: React.FC = () => {
                       onSelect={(value) =>
                         handlePlayerNumberSelect(player.id, value)
                       }
+                    
                     />
                   </div>
                 ) : (
