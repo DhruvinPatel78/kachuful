@@ -50,7 +50,7 @@ const NumberSelector: React.FC<NumberSelectorProps> = ({
         </div>
         
         <Button 
-          variant="danger" 
+          variant="outline" 
           size="sm" 
           onClick={handleIncrement}
           disabled={value >= maxNumber}
