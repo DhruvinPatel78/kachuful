@@ -270,9 +270,7 @@ const ActiveGame: React.FC = () => {
               >
                 <div className="flex justify-between items-center mb-3">
                   <div className="flex items-center gap-2">
-                    <h3 className={`font-medium text-lg ${
-                      isHighlighted ? "text-emerald-400" : roundState === "selection" && isRoundNumberEqual ? "text-red-400" : "text-white"
-                    }`}>
+                    <h3 className={`font-medium text-lg ${isHighlighted ? "text-emerald-400": roundState === "selection" && isRoundNumberEqual ? "text-red-400" : "text-white"}`}>
                       {player.name}
                     </h3>
                     {isHighlighted && (
