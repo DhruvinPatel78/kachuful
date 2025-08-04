@@ -17,6 +17,7 @@ export default {
           900: '#7f1d1d',
           950: '#450a0a',
         },
+        danger2: 'rgba(127, 29, 29, 0.2)',
         danger: '#e74c3c',
       },
     },
