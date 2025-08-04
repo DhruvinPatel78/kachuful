@@ -194,13 +194,6 @@ const ActiveGame: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex flex-wrap justify-between items-center text-sm text-slate-300 mb-2">
-              <div>
-                Players:{" "}
-                <span className="font-bold">{currentGame.players.length}</span>
-              </div>
-            </div>
-
             <div className="h-2 bg-slate-700 rounded-full overflow-hidden mb-1">
               <div
                 className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-500"
