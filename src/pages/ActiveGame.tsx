@@ -131,6 +131,18 @@ const ActiveGame: React.FC = () => {
     return total;
   };
 
+  // Get the highlighted player index based on round sequence
+  const getHighlightedPlayerIndex = () => {
+    if (roundState !== "selection") return -1;
+    
+    const roundNumbers = currentGame.rounds.map(r => r.maxNumber);
+    const currentRoundPosition = currentGame.currentRound - 1;
+    
+    // Simple cycling through players based on round number
+    return currentRoundPosition % currentGame.players.length;
+  };
+
+  const highlightedPlayerIndex = getHighlightedPlayerIndex();
   // const getMissingSelections = () => {
   //   return currentGame.players.filter(player =>
   //     !currentRoundData.playerSelections.some(selection => selection.playerId === player.id)
@@ -235,15 +247,20 @@ const ActiveGame: React.FC = () => {
         </div>
         {/* Player selections or results */}
         <div className="space-y-4 mb-8">
-          {currentGame.players.map((player) => {
+          {currentGame.players.map((player, playerIndex) => {
             const playerSelection = getPlayerSelection(player.id);
             const playerResult = getPlayerResult(player.id);
             const totalScore = getPlayerTotalScore(player.id);
+            const isHighlighted = roundState === "selection" && playerIndex === highlightedPlayerIndex;
 
             return (
               <div
                 key={player.id}
-                className={`bg-slate-800 border border-slate-700 rounded-lg p-4 transition-all duration-300 ${
+                className={`bg-slate-800 border rounded-lg p-4 transition-all duration-300 ${
+                  isHighlighted
+                    ? "border-emerald-500 shadow-lg shadow-emerald-500/20 bg-emerald-950/20"
+                    : "border-slate-700"
+                } ${
                   roundState === "results" && playerResult
                     ? playerResult.success
                       ? "border-green-500/50 shadow-lg shadow-green-900/20"
@@ -252,7 +269,16 @@ const ActiveGame: React.FC = () => {
                 }`}
               >
                 <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-medium text-lg">{player.name}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className={`font-medium text-lg ${
+                      isHighlighted ? "text-emerald-400" : "text-white"
+                    }`}>
+                      {player.name}
+                    </h3>
+                    {isHighlighted && (
+                      <span className="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded-full font-medium">Your Turn</span>
+                    )}
+                  </div>
                   <div className="text-sm text-slate-400">
                     Total Score: <span className="font-bold">{totalScore}</span>
                   </div>
