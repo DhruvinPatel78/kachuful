@@ -233,14 +233,14 @@ const ActiveGame: React.FC = () => {
             </div>
             </div>
 
-            {roundState === "selection" && isRoundNumberEqual && (
+{/*             {roundState === "selection" && isRoundNumberEqual && (
               <div className="mt-3 p-3 bg-red-900/30 border border-red-700/50 rounded-lg">
                 <p className="text-sm text-red-300 font-medium">
                   Warning: Sum of all selected numbers ({totalSelectedNumbers})
                   equals round number ({currentRoundData.maxNumber}). This is not allowed!
                 </p>
               </div>
-            )}
+            )} */}
           </div>
 
           <div className={"h-[1px] bg-slate-700 mb-6 "} />
