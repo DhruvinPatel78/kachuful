@@ -259,7 +259,7 @@ const ActiveGame: React.FC = () => {
                 className={`bg-slate-800 border rounded-lg p-4 transition-all duration-300 ${
                   isHighlighted
                     ? "border-emerald-500 shadow-lg shadow-emerald-500/20 bg-emerald-950/20"
-                    : roundState === "selection" && isRoundNumberEqual ? "border-red-500 shadow-lg shadow-red-500/20 bg-red-950/20" : "border-slate-700"
+                    : roundState === "selection" && isRoundNumberEqual ? "border-red-500 shadow-lg shadow-red-500/20 bg-danger2" : "border-slate-700"
                 } ${
                   roundState === "results" && playerResult
                     ? playerResult.success
