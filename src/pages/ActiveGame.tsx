@@ -131,6 +131,18 @@ const ActiveGame: React.FC = () => {
     return total;
   };
 
+  // Get the highlighted player index based on round sequence
+  const getHighlightedPlayerIndex = () => {
+    if (roundState !== "selection") return -1;
+    
+    const roundNumbers = currentGame.rounds.map(r => r.maxNumber);
+    const currentRoundPosition = currentGame.currentRound - 1;
+    
+    // Simple cycling through players based on round number
+    return currentRoundPosition % currentGame.players.length;
+  };
+
+  const highlightedPlayerIndex = getHighlightedPlayerIndex();
   // const getMissingSelections = () => {
   //   return currentGame.players.filter(player =>
   //     !currentRoundData.playerSelections.some(selection => selection.playerId === player.id)
@@ -184,24 +196,13 @@ const ActiveGame: React.FC = () => {
           <div className="bg-slate-800 border border-slate-700 rounded-lg p-5">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-slate-300">
-                Round {currentRoundData.number}  {}
+                Cards {currentRoundData.maxNumber}  {}
               </h2>
               <span className={`text-5xl ${getSymbol.index % 2 === 0 ? 'text-danger' : "text-black"}`}>{getSymbol.char}</span>
               <div className="text-sm bg-slate-700 px-3 py-1 rounded-full">
                 {roundState === "selection"
                   ? "Selection"
                   : "Results"}
-              </div>
-            </div>
-
-            <div className="flex flex-wrap justify-between items-center text-sm text-slate-300 mb-2">
-              <div>
-                Max Number:{" "}
-                <span className="font-bold">{currentRoundData.maxNumber}</span>
-              </div>
-              <div>
-                Players:{" "}
-                <span className="font-bold">{currentGame.players.length}</span>
               </div>
             </div>
 
@@ -221,36 +222,45 @@ const ActiveGame: React.FC = () => {
                 }}
               ></div>
             </div>
-
-            <div className="text-xs text-slate-400 text-right">
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-slate-400">
+              Players {currentGame.players.length}
+            </div>
+            <div className="text-xs text-slate-400">
               {roundState === "selection"
                 ? `${currentRoundData.playerSelections.length}/${currentGame.players.length} selected`
                 : `${currentRoundData.playerResults.length}/${currentGame.players.length} recorded`}
             </div>
+            </div>
 
-            {roundState === "selection" && isRoundNumberEqual && (
+{/*             {roundState === "selection" && isRoundNumberEqual && (
               <div className="mt-3 p-3 bg-red-900/30 border border-red-700/50 rounded-lg">
                 <p className="text-sm text-red-300 font-medium">
                   Warning: Sum of all selected numbers ({totalSelectedNumbers})
                   equals round number ({currentRoundData.maxNumber}). This is not allowed!
                 </p>
               </div>
-            )}
+            )} */}
           </div>
 
           <div className={"h-[1px] bg-slate-700 mb-6 "} />
         </div>
         {/* Player selections or results */}
         <div className="space-y-4 mb-8">
-          {currentGame.players.map((player) => {
+          {currentGame.players.map((player, playerIndex) => {
             const playerSelection = getPlayerSelection(player.id);
             const playerResult = getPlayerResult(player.id);
             const totalScore = getPlayerTotalScore(player.id);
+            const isHighlighted = roundState === "selection" && playerIndex === highlightedPlayerIndex;
 
             return (
               <div
                 key={player.id}
-                className={`bg-slate-800 border border-slate-700 rounded-lg p-4 transition-all duration-300 ${
+                className={`bg-slate-800 border rounded-lg p-4 transition-all duration-300 ${
+                  isHighlighted
+                    ? "border-emerald-500 shadow-lg shadow-emerald-500/20 bg-emerald-950/20"
+                    : roundState === "selection" && isRoundNumberEqual ? "border-red-500 shadow-lg shadow-red-500/20 bg-danger2" : "border-slate-700"
+                } ${
                   roundState === "results" && playerResult
                     ? playerResult.success
                       ? "border-green-500/50 shadow-lg shadow-green-900/20"
@@ -259,8 +269,19 @@ const ActiveGame: React.FC = () => {
                 }`}
               >
                 <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-medium text-lg">{player.name}</h3>
-                  <div className="text-sm text-slate-400">
+                  <div className="flex items-center gap-2">
+                    <h3 className={`font-medium text-lg ${
+                      isHighlighted ? "text-emerald-400" : "text-white"
+                    }`}>
+                      {player.name}
+                    </h3>
+                    {isHighlighted && (
+                      <span className="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded-full font-medium">Your Turn</span>
+                    )}
+                  </div>
+                  <div className={`text-sm ${
+                      isHighlighted ? "text-emerald-400" : "text-slate-400"
+                    }`}>
                     Total Score: <span className="font-bold">{totalScore}</span>
                   </div>
                 </div>
@@ -274,6 +295,7 @@ const ActiveGame: React.FC = () => {
                       onSelect={(value) =>
                         handlePlayerNumberSelect(player.id, value)
                       }
+                    
                     />
                   </div>
                 ) : (

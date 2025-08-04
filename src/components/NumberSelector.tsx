@@ -5,12 +5,14 @@ interface NumberSelectorProps {
   maxNumber: number;
   onSelect: (value: number) => void;
   selectedValue?: number;
+  isInvalid: boolean;
 }
 
 const NumberSelector: React.FC<NumberSelectorProps> = ({ 
   maxNumber, 
   onSelect,
-  selectedValue 
+  selectedValue,
+  isInvalid = false
 }) => {
   const [value, setValue] = useState<number>(selectedValue || 0);
   
@@ -31,7 +33,7 @@ const NumberSelector: React.FC<NumberSelectorProps> = ({
   };
   
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center bg-red">
       <div className="flex items-center gap-3 mb-2">
         <Button 
           variant="outline" 
@@ -56,10 +58,6 @@ const NumberSelector: React.FC<NumberSelectorProps> = ({
         >
           +
         </Button>
-      </div>
-      
-      <div className="text-xs text-slate-400">
-        Choose 0-{maxNumber}
       </div>
     </div>
   );
