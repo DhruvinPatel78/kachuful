@@ -218,8 +218,7 @@ const ActiveGame: React.FC = () => {
               ></div>
             </div>
             <div className="flex items-center justify-between">
-            </div>
-            <div className="text-xs text-slate-400 text-right">
+              <div className="text-xs text-slate-400 text-right">
               {roundState === "selection"
                 ? `${currentRoundData.playerSelections.length}/${currentGame.players.length} selected`
                 : `${currentRoundData.playerResults.length}/${currentGame.players.length} recorded`}
@@ -228,6 +227,7 @@ const ActiveGame: React.FC = () => {
               {roundState === "selection"
                 ? `${currentRoundData.playerSelections.length}/${currentGame.players.length} selected`
                 : `${currentRoundData.playerResults.length}/${currentGame.players.length} recorded`}
+            </div>
             </div>
 
             {roundState === "selection" && isRoundNumberEqual && (
