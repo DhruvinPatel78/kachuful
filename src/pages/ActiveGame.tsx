@@ -196,10 +196,6 @@ const ActiveGame: React.FC = () => {
 
             <div className="flex flex-wrap justify-between items-center text-sm text-slate-300 mb-2">
               <div>
-                Max Number:{" "}
-                <span className="font-bold">{currentRoundData.maxNumber}</span>
-              </div>
-              <div>
                 Players:{" "}
                 <span className="font-bold">{currentGame.players.length}</span>
               </div>
