@@ -2,8 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import Button from '../components/Button';
-import { PlusCircle, List, Trophy, History } from 'lucide-react';
+import { PlusCircle, List, Trophy, History, Download } from 'lucide-react';
 import { useGameContext } from '../context/GameContext';
+import { isInstallable, triggerInstallPrompt, isStandalone } from '../utils/pwa';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -11,6 +12,10 @@ const Home: React.FC = () => {
 
   const activeGames = games.filter(g => g.status === 'active');
   const completedGames = games.filter(g => g.status === 'completed');
+
+  const handleInstall = async () => {
+    await triggerInstallPrompt();
+  };
 
   return (
     <Layout title="Kachuful Scoreboard">
@@ -29,6 +34,18 @@ const Home: React.FC = () => {
               <PlusCircle className="inline mr-2 group-hover:rotate-90 transition-transform duration-300" size={18} />
               New Game
             </Button>
+            
+            {isInstallable() && !isStandalone() && (
+              <Button
+                onClick={handleInstall}
+                variant="outline"
+                size="lg"
+                className="group mt-3"
+              >
+                <Download className="inline mr-2 group-hover:scale-110 transition-transform duration-300" size={18} />
+                Install App
+              </Button>
+            )}
           </div>
         </div>
 
