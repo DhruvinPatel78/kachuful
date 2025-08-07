@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { GameProvider } from './context/GameContext';
+import OnlineStatus from './components/OnlineStatus';
 import Home from './pages/Home';
 import NewGame from './pages/NewGame';
 import GameSetup from './pages/GameSetup';
@@ -10,6 +11,7 @@ import GameResults from './pages/GameResults';
 function App() {
   return (
     <GameProvider>
+      <OnlineStatus />
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
