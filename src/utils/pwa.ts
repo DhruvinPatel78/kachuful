@@ -1,35 +1,45 @@
 // PWA utilities for service worker registration and updates
 
 export const registerServiceWorker = async (): Promise<void> => {
-  if ('serviceWorker' in navigator) {
-    try {
-      const registration = await navigator.serviceWorker.register('/sw.js', {
-        scope: '/'
-      });
+  // Check if we're in an environment that supports Service Workers
+  if (!('serviceWorker' in navigator)) {
+    console.log('Service Workers are not supported in this environment');
+    return;
+  }
 
-      console.log('Service Worker registered successfully:', registration);
+  // Check if we're in StackBlitz or other environments that don't support SW
+  if (window.location.hostname === 'localhost' && window.location.port === '5173') {
+    console.log('Service Worker registration skipped in development environment');
+    return;
+  }
 
-      // Handle service worker updates
-      registration.addEventListener('updatefound', () => {
-        const newWorker = registration.installing;
-        if (newWorker) {
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // New service worker is available
-              showUpdateAvailable(registration);
-            }
-          });
-        }
-      });
+  try {
+    const registration = await navigator.serviceWorker.register('/sw.js', {
+      scope: '/'
+    });
 
-      // Handle controller change (new service worker activated)
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        window.location.reload();
-      });
+    console.log('Service Worker registered successfully:', registration);
 
-    } catch (error) {
-      console.error('Service Worker registration failed:', error);
-    }
+    // Handle service worker updates
+    registration.addEventListener('updatefound', () => {
+      const newWorker = registration.installing;
+      if (newWorker) {
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            // New service worker is available
+            showUpdateAvailable(registration);
+          }
+        });
+      }
+    });
+
+    // Handle controller change (new service worker activated)
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      window.location.reload();
+    });
+
+  } catch (error) {
+    console.log('Service Worker registration failed:', error);
   }
 };
 
