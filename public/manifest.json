@@ -13,6 +13,10 @@
   "lang": "en",
   "dir": "ltr",
   "prefer_related_applications": false,
+  "id": "/",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
   "icons": [
     {
       "src": "/icon.svg",
