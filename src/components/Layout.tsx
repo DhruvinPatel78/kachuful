@@ -1,8 +1,9 @@
 import React, { ReactNode } from "react";
-import { ArrowLeft, Swords } from "lucide-react";
+import { ArrowLeft, Swords, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { reset } from "../utils/storage.ts";
 import { useGameContext } from "../context/GameContext.tsx";
+import { isInstallable, triggerInstallPrompt, isStandalone } from "../utils/pwa";
 
 interface LayoutProps {
   children: ReactNode;
@@ -18,6 +19,10 @@ const Layout: React.FC<LayoutProps> = ({
   const navigate = useNavigate();
 
   const { resetContext } = useGameContext();
+  
+  const handleInstall = async () => {
+    await triggerInstallPrompt();
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-800 to-slate-900 text-white">
@@ -42,17 +47,29 @@ const Layout: React.FC<LayoutProps> = ({
             )}
             <h1 className="text-base lg:text-2xl font-bold tracking-tight">{title}</h1>
           </div>
-          <button
-            onClick={() => {
-              reset();
-              resetContext();
-              navigate("/");
-            }}
-            className="mr-3 p-2 rounded-full hover:bg-slate-700 transition-colors text-base"
-            aria-label="Reset"
-          >
-            Reset
-          </button>
+          <div className="flex items-center gap-2">
+            {isInstallable() && !isStandalone() && (
+              <button
+                onClick={handleInstall}
+                className="p-2 rounded-full hover:bg-slate-700 transition-colors text-emerald-400"
+                aria-label="Install App"
+                title="Install Kachuful"
+              >
+                <Download size={18} />
+              </button>
+            )}
+            <button
+              onClick={() => {
+                reset();
+                resetContext();
+                navigate("/");
+              }}
+              className="p-2 rounded-full hover:bg-slate-700 transition-colors text-base"
+              aria-label="Reset"
+            >
+              Reset
+            </button>
+          </div>
         </div>
       </header>
       <main className="container mx-auto px-4 py-6 pb-24">{children}</main>
