@@ -4,20 +4,55 @@
   "description": "Track scores and manage card game rounds",
   "start_url": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#0f172a",
   "theme_color": "#10b981",
   "orientation": "portrait",
+  "scope": "/",
+  "categories": ["games", "entertainment", "utilities"],
+  "lang": "en",
+  "dir": "ltr",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icon.svg",
-      "sizes": "any",
+      "sizes": "48x48 72x72 96x96 128x128 256x256 512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "/image.ico",
-      "sizes": "32x32",
-      "type": "image/x-icon"
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32",
+      "type": "image/x-icon",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Game",
+      "short_name": "New Game",
+      "description": "Start a new card game",
+      "url": "/new-game",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Games List",
+      "short_name": "Games",
+      "description": "View all your games",
+      "url": "/games",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
     }
   ]
 }
